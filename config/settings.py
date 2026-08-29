@@ -26,7 +26,17 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-pro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost,testserver', cast=Csv())
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='127.0.0.1,localhost,testserver,gymrenew-1.onrender.com',
+    cast=Csv()
+)
+
+# Render can provide the active service hostname automatically. Adding it here
+# also keeps deployments working when ALLOWED_HOSTS is customized in the dashboard.
+render_hostname = config('RENDER_EXTERNAL_HOSTNAME', default='')
+if render_hostname and render_hostname not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_hostname)
 
 
 # Application definition
