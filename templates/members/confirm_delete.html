@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Member - GymRenew{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card border-danger">
+                <div class="card-header bg-danger">
+                    <h4 class="mb-0 text-white">Delete Member?</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">
+                        Are you sure you want to delete <strong>{{ member.name }}</strong>?
+                    </p>
+                    <div class="alert alert-warning">
+                        ⚠️ This action <strong>cannot be undone</strong>. All member information will be permanently deleted.
+                    </div>
+
+                    <form method="post" class="d-flex gap-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger flex-grow-1">🗑️ Yes, Delete</button>
+                        <a href="{% url 'members:detail' member.id %}" class="btn btn-secondary">← Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

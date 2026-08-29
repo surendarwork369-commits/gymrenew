@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Reminder History - GymRenew{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Reminders</h2>
+        <a href="{% url 'members:list' %}" class="btn btn-primary">← Members</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-0">
+            {% if reminders %}
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Member</th>
+                                <th>Type</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                                <th>Scheduled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reminder in reminders %}
+                                <tr>
+                                    <td>{{ reminder.member.name }}</td>
+                                    <td>{{ reminder.get_reminder_type_display }}</td>
+                                    <td>{{ reminder.message|truncatechars:90 }}</td>
+                                    <td>
+                                        {% if reminder.status == 'SENT' %}
+                                            <span class="badge text-bg-success">{{ reminder.status }}</span>
+                                        {% elif reminder.status == 'FAILED' %}
+                                            <span class="badge text-bg-danger">{{ reminder.status }}</span>
+                                        {% else %}
+                                            <span class="badge text-bg-warning text-dark">{{ reminder.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ reminder.scheduled_at|date:'d M Y H:i' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="p-4 text-center text-muted">
+                    No reminders have been generated yet.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

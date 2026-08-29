@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GymRenew - Gym Membership Management{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f4f7fb;
+            --bg-secondary: #eef2ff;
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --navy: #0f172a;
+            --slate: #475569;
+            --primary: #4f46e5;
+            --primary-strong: #3730a3;
+            --accent: #14b8a6;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --soft-border: rgba(148, 163, 184, 0.2);
+            --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.10);
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 25%),
+                radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.10), transparent 22%),
+                var(--bg-primary);
+            color: var(--navy);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .page-shell {
+            padding: 2rem 0 3rem;
+        }
+
+        .modern-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(14px);
+            background: rgba(255,255,255,0.82);
+            border-bottom: 1px solid var(--soft-border);
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.55rem;
+            color: var(--navy) !important;
+            letter-spacing: -0.04em;
+        }
+
+        .navbar-brand span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            font-size: 1.1rem;
+            margin-right: 0.55rem;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.22);
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: var(--slate) !important;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary) !important;
+        }
+
+        .user-pill {
+            border-radius: 999px;
+            background: rgba(79, 70, 229, 0.08);
+            border: 1px solid rgba(79, 70, 229, 0.12);
+            padding: 0.5rem 0.9rem;
+            font-weight: 700;
+            color: var(--primary-strong);
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 3rem auto;
+        }
+
+        .auth-shell {
+            max-width: 1100px;
+            margin: 3rem auto;
+            background: rgba(255,255,255,0.70);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: var(--shadow-soft);
+            border-radius: 32px;
+            overflow: hidden;
+            backdrop-filter: blur(14px);
+        }
+
+        .auth-hero {
+            background: linear-gradient(135deg, #111827, #312e81 55%, #4f46e5 100%);
+            color: white;
+            padding: 3rem 2rem;
+            min-height: 100%;
+            position: relative;
+        }
+
+        .auth-hero::before {
+            content: "";
+            position: absolute;
+            inset: auto -70px -70px auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            filter: blur(10px);
+        }
+
+        .auth-hero h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.05rem;
+            margin-bottom: 1rem;
+        }
+
+        .auth-hero p {
+            color: rgba(255,255,255,0.84);
+            line-height: 1.7;
+        }
+
+        .auth-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+        }
+
+        .auth-feature .icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.14);
+        }
+
+        .card {
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            box-shadow: var(--shadow-soft);
+            border-radius: 22px;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 24px 50px rgba(15, 23, 42, 0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+            color: white;
+            border: none;
+            font-weight: 700;
+            padding: 1rem 1.2rem;
+        }
+
+        .card-body { padding: 1.35rem; }
+
+        .btn {
+            border-radius: 12px;
+            font-weight: 700;
+            padding: 0.75rem 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            border: none;
+            box-shadow: 0 12px 25px rgba(79, 70, 229, 0.22);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4338ca, #5b21b6);
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(79, 70, 229, 0.25);
+            color: var(--primary);
+        }
+
+        .btn-outline-secondary {
+            border-color: rgba(148, 163, 184, 0.4);
+            color: var(--navy);
+        }
+
+        .btn-success { background: linear-gradient(135deg, var(--success), #059669); border:none; }
+        .btn-warning { background: linear-gradient(135deg, #fbbf24, #f59e0b); border:none; color:white; }
+        .btn-danger { background: linear-gradient(135deg, #f87171, #ef4444); border:none; }
+        .btn-info { background: linear-gradient(135deg, #22d3ee, #06b6d4); border:none; color:white; }
+
+        .form-label {
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select,
+        textarea {
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(248, 250, 252, 0.95);
+            border-radius: 14px;
+            padding: 0.78rem 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus,
+        textarea:focus {
+            border-color: rgba(79, 70, 229, 0.6);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+            background: white;
+        }
+
+        .text-muted-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .text-muted-link:hover {
+            text-decoration: underline;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(238,242,255,0.92));
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            padding: 1.1rem;
+            height: 100%;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover { transform: translateY(-2px); }
+
+        .stat-card .label {
+            color: var(--slate);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-top: 0.3rem;
+        }
+
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 0.6rem;
+        }
+
+        .table thead th {
+            border: none;
+            color: var(--slate);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: transparent !important;
+        }
+
+        .table tbody tr {
+            background: rgba(255,255,255,0.7);
+            border-radius: 16px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+        }
+
+        .table tbody td {
+            border: none;
+            padding: 1rem 0.85rem;
+            vertical-align: middle;
+        }
+
+        .badge {
+            border-radius: 999px;
+            padding: 0.45rem 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0 2.2rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+            color: var(--slate);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 767.98px) {
+            .auth-shell { margin: 1.5rem 0.75rem; }
+            .auth-hero { padding: 2rem 1.5rem; }
+            .page-shell { padding-top: 1.1rem; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg modern-nav">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'accounts:home' %}">
+                <span>💪</span> GymRenew
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard:index' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'gyms:profile' %}">Gym</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'members:list' %}">Members</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'reminders:list' %}">Reminders</a>
+                        </li>
+                        <li class="nav-item">
+                            <span class="user-pill">{{ user.first_name|default:user.username }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'accounts:logout' %}" class="d-inline-block">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary btn-sm" href="{% url 'accounts:signup' %}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="page-shell">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p>&copy; 2026 GymRenew. All rights reserved. | Helping gyms manage memberships and reminders.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

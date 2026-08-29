@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ member.name }} - GymRenew{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary">
+                    <h4 class="mb-0">{{ member.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Phone:</strong> <a href="tel:{{ member.phone }}">{{ member.phone }}</a></p>
+                            <p><strong>Email:</strong> 
+                                {% if member.email %}
+                                    <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                                {% else %}
+                                    <em class="text-muted">Not provided</em>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Gym:</strong> {{ member.gym.gym_name }}</p>
+                            <p><strong>Member Since:</strong> {{ member.created_at|date:"d M Y" }}</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mb-3">Membership Details</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Start Date:</strong> {{ member.membership_start_date|date:"d M Y" }}</p>
+                            <p><strong>End Date:</strong> {{ member.membership_end_date|date:"d M Y" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Amount:</strong> <strong>₹{{ member.membership_amount }}</strong></p>
+                        </div>
+                    </div>
+
+                    {% if member.notes %}
+                        <hr>
+                        <h5 class="mb-3">Notes</h5>
+                        <p>{{ member.notes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Actions Sidebar -->
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h6 class="mb-0">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'members:edit' member.id %}" class="btn btn-warning w-100 mb-2">✏️ Edit Member</a>
+                    <form method="post" action="{% url 'reminders:send_member' member.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-info w-100 mb-2">📲 Send Reminder</button>
+                    </form>
+                    <a href="{% url 'members:delete' member.id %}" class="btn btn-danger w-100 mb-2">🗑️ Delete Member</a>
+                    <a href="{% url 'members:list' %}" class="btn btn-secondary w-100">← Back to Members</a>
+                </div>
+            </div>
+
+            <!-- Membership Status Card -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">📅 Membership Status</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        {% with days_left=member.membership_end_date|add:"-0" %}
+                            Expires in: <strong>{{ member.membership_end_date|timeuntil }}</strong>
+                        {% endwith %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

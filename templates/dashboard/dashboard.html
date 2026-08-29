@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - GymRenew{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <p class="text-uppercase text-primary fw-bold mb-2" style="letter-spacing: 0.12em; font-size: 0.72rem;">Overview</p>
+            <h2 class="mb-1">Dashboard</h2>
+            <p class="text-muted mb-0">{{ gym.gym_name }}</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'members:add' %}" class="btn btn-primary">+ Add Member</a>
+            <a href="{% url 'members:list' %}" class="btn btn-outline-secondary">View Members</a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="label">Total Members</div>
+                <div class="value text-primary">{{ total_members }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="label">Active</div>
+                <div class="value text-success">{{ active_members }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="label">Expiring Soon</div>
+                <div class="value text-warning">{{ expiring_soon_count }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="label">Expired</div>
+                <div class="value text-danger">{{ expired_members }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Memberships Expiring Soon</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search by name or phone...">
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                        <option value="expiring_soon" {% if status_filter == 'expiring_soon' %}selected{% endif %}>Expiring Soon</option>
+                        <option value="expired" {% if status_filter == 'expired' %}selected{% endif %}>Expired</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>
+                </div>
+            </form>
+
+            {% if members %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Expiry Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in members %}
+                                <tr>
+                                    <td><strong>{{ member.name }}</strong></td>
+                                    <td>{{ member.phone }}</td>
+                                    <td>{{ member.membership_end_date|date:"d M Y" }}</td>
+                                    <td>₹{{ member.membership_amount }}</td>
+                                    <td>
+                                        {% if member.membership_status == 'ACTIVE' %}
+                                            <span class="badge bg-success">ACTIVE</span>
+                                        {% elif member.membership_status == 'EXPIRING_SOON' %}
+                                            <span class="badge bg-warning text-dark">EXPIRING SOON</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">EXPIRED</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'members:detail' member.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info mb-0">
+                    No members match the current dashboard filters.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

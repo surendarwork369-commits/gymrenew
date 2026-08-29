@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Gym Profile - GymRenew{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-8">
+            {% if gym %}
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">{{ gym.gym_name }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <p class="mb-3"><strong>Phone:</strong> {{ gym.phone }}</p>
+                                <p class="mb-3"><strong>Email:</strong> {{ gym.email }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-3"><strong>Address:</strong> {{ gym.address }}</p>
+                                <p class="mb-3"><strong>Created:</strong> {{ gym.created_at|date:"d M Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    <h5 class="alert-heading">No gym profile yet</h5>
+                    <p class="mb-0">You haven't created a gym profile yet. Set it up to start managing members and renewals.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Actions</h6>
+                </div>
+                <div class="card-body">
+                    {% if gym %}
+                        <a href="{% url 'gyms:edit' %}" class="btn btn-primary w-100 mb-2">Edit Profile</a>
+                        <a href="{% url 'members:list' %}" class="btn btn-info w-100">View Members</a>
+                    {% else %}
+                        <a href="{% url 'gyms:edit' %}" class="btn btn-primary w-100">Create Gym Profile</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Getting started</h6>
+                </div>
+                <div class="card-body">
+                    <small class="text-muted d-block">
+                        <strong>1.</strong> Create your gym profile<br>
+                        <strong>2.</strong> Add members<br>
+                        <strong>3.</strong> Track membership status<br>
+                        <strong>4.</strong> Send reminders
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
