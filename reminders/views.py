@@ -1,10 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpResponseRedirect
+from urllib.parse import quote
 
 from members.models import Member
 from .models import Reminder
-from .services import create_member_reminder, determine_member_reminder_type
+from .services import build_membership_reminder_message, determine_member_reminder_type
 
 
 @login_required
@@ -37,12 +39,15 @@ def send_member_reminder(request, member_id):
         messages.info(request, 'This member is not currently in the reminder window.')
         return redirect('members:detail', member_id=member.id)
 
-    reminder = create_member_reminder(member)
-    if reminder is None:
-        messages.info(request, 'A reminder was already sent today for this member.')
-    elif reminder.status == 'SENT':
-        messages.success(request, f'Reminder sent to {member.name}.')
-    else:
-        messages.error(request, f'Failed to send reminder to {member.name}.')
+    phone_number = ''.join(character for character in member.phone if character.isdigit())
+    if phone_number.startswith('0'):
+        phone_number = phone_number[1:]
+    if len(phone_number) == 10:
+        phone_number = f'91{phone_number}'
+    if not phone_number:
+        messages.error(request, 'This member does not have a valid phone number.')
+        return redirect('members:detail', member_id=member.id)
 
-    return redirect('members:detail', member_id=member.id)
+    message = build_membership_reminder_message(member, reminder_type)
+    whatsapp_url = f'https://wa.me/{phone_number}?text={quote(message)}'
+    return HttpResponseRedirect(whatsapp_url)
