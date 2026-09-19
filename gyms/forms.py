@@ -1,5 +1,7 @@
 from django import forms
 from .models import Gym
+from django.core.exceptions import ValidationError
+
 
 
 class GymForm(forms.ModelForm):
@@ -34,3 +36,19 @@ class GymForm(forms.ModelForm):
                 'rows': 3
             }),
         }
+    def clean_gym_name(self):
+       gym_name = self.cleaned_data.get('gym_name')
+
+       if gym_name and not gym_name.replace(' ', '').isalpha():
+           raise ValidationError('Name should contain only letters.')
+
+       return gym_name
+    def clean_phone(self):
+       phone = self.cleaned_data.get('phone')
+       if phone and not phone.isdigit():
+           raise ValidationError('Phone number should be digit')
+       if len(phone) < 10:
+           raise ValidationError('phone number must contains 10 digits')
+       if not phone.startswith(('6' , '7' , '8' , '9')):
+           raise ValidationError('invalid! number')
+       return phone
