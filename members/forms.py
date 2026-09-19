@@ -70,3 +70,19 @@ class MemberForm(forms.ModelForm):
                 )
 
         return cleaned_data
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+
+        if name and not name.replace(' ', '').isalpha():
+            raise ValidationError('Name should contain only letters.')
+
+        return name
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        if phone and not phone.isdigit():
+            raise ValidationError('Phone number should be digit')
+        if len(phone) < 10:
+            raise ValidationError('phone number must contains 10 digits')
+        if not phone.startswith(('6' , '7' , '8' , '9')):
+            raise ValidationError('invalid! number')
+        return phone

@@ -74,9 +74,18 @@
                 </div>
                 <div class="card-body">
                     <p class="mb-2">
-                        {% with days_left=member.membership_end_date|add:"-0" %}
-                            Expires in: <strong>{{ member.membership_end_date|timeuntil }}</strong>
-                        {% endwith %}
+                        {% if member.days_until_expiry < 0 %}
+    <strong>Expired</strong>
+
+{% elif member.days_until_expiry == 0 %}
+    <strong>Expires today</strong>
+
+{% elif member.days_until_expiry == 1 %}
+    Expires in: <strong>1 day</strong>
+
+{% else %}
+    Expires in: <strong>{{ member.days_until_expiry }} days</strong>
+{% endif %}
                     </p>
                 </div>
             </div>
